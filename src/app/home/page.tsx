@@ -7,13 +7,21 @@ import Pagination from '../components/Pagination';
 import Sort from '../components/Sort';
 import { useRouter } from 'next/navigation';
 
+export interface Filters {
+  country: string;
+  university: string;
+  duration: string;
+  language: string;
+  costRange: [number, number];
+}
+
 export interface Application {
   id: number;
   name: string;
   university: string;
   country: string;
   duration: string;
-  cost: number;
+  cost:  number;
   deadline: string;
   language: string;
 }
@@ -24,12 +32,12 @@ const HomePage = () => {
   const [filteredApplications, setFilteredApplications] = useState<Application[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 10;
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<Filters>({
     country: '',
     university: '',
     duration: '',
     language: '',
-    costRange: [0, 20000],
+    costRange: [0, 0],
   });
   const [sortType, setSortType] = useState('');
 
@@ -56,7 +64,7 @@ const HomePage = () => {
     }
   }, [router]);
 
-  const handleFilterChange = (newFilters: any) => {
+  const handleFilterChange = (newFilters: Filters) => {
     setFilters(newFilters);
     applyFiltersAndSort(newFilters, sortType);
   };
@@ -66,7 +74,7 @@ const HomePage = () => {
     applyFiltersAndSort(filters, sort);
   };
 
-  const applyFiltersAndSort = (filters: any, sortType: string) => {
+  const applyFiltersAndSort = (filters: Filters, sortType: string) => {
     let filtered = applicationsData.filter(app => {
       return (
         (filters.country ? app.country === filters.country : true) &&
