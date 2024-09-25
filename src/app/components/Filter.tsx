@@ -1,68 +1,76 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Application } from '../home/page';
+import { Application, Filters } from '../home/page';
 
 interface FilterProps {
-  onFilterChange: (filters: any) => void;
+  onFilterChange: (filters: Filters) => void;
   applications: Application[];
 }
 
 export default function Filter({ onFilterChange, applications }: FilterProps) {
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<Filters>({
     country: '',
     university: '',
     duration: '',
     language: '',
-    costRange: [0, 0],
+    costRange: [0, 0] as [number, number],
   });
+
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [showCostResetButton, setShowCostResetButton] = useState(false);
   const [costLimits, setCostLimits] = useState({ min: 0, max: 0 });
 
   useEffect(() => {
-    const costs = applications.map(app => app.cost); 
+    const costs = applications.map(app => app.cost);
     const minCost = Math.min(...costs);
     const maxCost = Math.max(...costs);
 
     setCostLimits({ min: minCost, max: maxCost });
-    setFilters(prev => ({ ...prev, costRange: [minCost, maxCost] }));
+    setFilters(prev => ({ ...prev, costRange: [minCost, maxCost] as [number, number] }));
   }, [applications]);
 
-  const handleChange = (key: string, value: string | number[]) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
+  useEffect(() => {
+    onFilterChange(filters);
+  }, [filters]);
 
-    if (Array.isArray(value)) {
-      const filterLabel = `Cost: $${value[0]} - $${value[1]}`;
-      setSelectedFilters((prev) => {
-        const existingIndex = prev.findIndex(f => f.startsWith('Cost:'));
-        if (existingIndex !== -1) {
-          const updated = [...prev];
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+
+    const filterLabel = value ? `${name.charAt(0).toUpperCase() + name.slice(1)}: ${value}` : '';
+    setSelectedFilters(prev => {
+      const existingIndex = prev.findIndex(f => f.startsWith(`${name.charAt(0).toUpperCase() + name.slice(1)}:`));
+      if (existingIndex !== -1) {
+        const updated = [...prev];
+        if (filterLabel) {
           updated[existingIndex] = filterLabel;
-          return updated;
+        } else {
+          updated.splice(existingIndex, 1);
         }
-        return [...prev, filterLabel];
-      });
-    } else {
-      const filterLabel = value ? `${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}` : '';
-      setSelectedFilters((prev) => value ? [...prev, filterLabel] : prev.filter(f => !f.startsWith(`${key.charAt(0).toUpperCase() + key.slice(1)}:`)));
-    }
-
-    onFilterChange(newFilters);
+        return updated;
+      }
+      return filterLabel ? [...prev, filterLabel] : prev;
+    });
   };
 
   const handleRemoveFilter = (filter: string) => {
     const [key] = filter.split(': ');
 
     if (key === 'Cost') {
-      setFilters({ ...filters, costRange: [costLimits.min, costLimits.max] });
+      setFilters(prevFilters => ({
+        ...prevFilters,
+        costRange: [costLimits.min, costLimits.max] as [number, number],
+      }));
+      setShowCostResetButton(false);
     } else {
-      setFilters({ ...filters, [key.toLowerCase()]: '' });
+      setFilters(prevFilters => ({
+        ...prevFilters,
+        [key.toLowerCase()]: '',
+      }));
     }
 
-    setSelectedFilters((prev) => prev.filter(f => f !== filter));
-    onFilterChange(filters);
+    setSelectedFilters(prev => prev.filter(f => f !== filter));
   };
 
   const handleClearFilters = () => {
@@ -71,26 +79,19 @@ export default function Filter({ onFilterChange, applications }: FilterProps) {
       university: '',
       duration: '',
       language: '',
-      costRange: [costLimits.min, costLimits.max],
+      costRange: [costLimits.min, costLimits.max] as [number, number],
     });
     setSelectedFilters([]);
     setShowCostResetButton(false);
-    onFilterChange({
-      country: '',
-      university: '',
-      duration: '',
-      language: '',
-      costRange: [costLimits.min, costLimits.max],
-    });
   };
 
   const handleSliderChangeMin = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(event.target.value);
-    const [_, max] = filters.costRange;
+    const [, max] = filters.costRange;
 
     if (value <= max) {
-      setFilters(prev => ({ ...prev, costRange: [value, max] }));
-      onFilterChange({ ...filters, costRange: [value, max] });
+      const updatedCostRange: [number, number] = [value, max];
+      setFilters(prev => ({ ...prev, costRange: updatedCostRange }));
       setShowCostResetButton(true);
     }
   };
@@ -100,15 +101,15 @@ export default function Filter({ onFilterChange, applications }: FilterProps) {
     const [min] = filters.costRange;
 
     if (value >= min) {
-      setFilters(prev => ({ ...prev, costRange: [min, value] }));
-      onFilterChange({ ...filters, costRange: [min, value] });
+      const updatedCostRange: [number, number] = [min, value];
+      setFilters(prev => ({ ...prev, costRange: updatedCostRange }));
       setShowCostResetButton(true);
     }
   };
 
   const resetCostRange = () => {
-    setFilters(prev => ({ ...prev, costRange: [costLimits.min, costLimits.max] }));
-    onFilterChange({ ...filters, costRange: [costLimits.min, costLimits.max] });
+    const defaultCostRange: [number, number] = [costLimits.min, costLimits.max];
+    setFilters(prev => ({ ...prev, costRange: defaultCostRange }));
     setShowCostResetButton(false);
   };
 
@@ -116,11 +117,11 @@ export default function Filter({ onFilterChange, applications }: FilterProps) {
     <div className="mb-4 p-4 bg-white rounded shadow-lg">
       <h3 className="text-xl font-semibold mb-2">Filters</h3>
       <div className="grid grid-cols-1 gap-4">
-
         <div className="w-full">
           <select
+            name="country"
             value={filters.country}
-            onChange={(e) => handleChange('country', e.target.value)}
+            onChange={handleChange}
             className="border rounded p-2 w-full"
           >
             <option value="">Select Country</option>
@@ -132,8 +133,9 @@ export default function Filter({ onFilterChange, applications }: FilterProps) {
 
         <div className="w-full">
           <select
+            name="university"
             value={filters.university}
-            onChange={(e) => handleChange('university', e.target.value)}
+            onChange={handleChange}
             className="border rounded p-2 w-full"
           >
             <option value="">Select University</option>
@@ -145,8 +147,9 @@ export default function Filter({ onFilterChange, applications }: FilterProps) {
 
         <div className="w-full">
           <select
+            name="duration"
             value={filters.duration}
-            onChange={(e) => handleChange('duration', e.target.value)}
+            onChange={handleChange}
             className="border rounded p-2 w-full"
           >
             <option value="">Select Duration</option>
@@ -158,8 +161,9 @@ export default function Filter({ onFilterChange, applications }: FilterProps) {
 
         <div className="w-full">
           <select
+            name="language"
             value={filters.language}
-            onChange={(e) => handleChange('language', e.target.value)}
+            onChange={handleChange}
             className="border rounded p-2 w-full"
           >
             <option value="">Select Language</option>
@@ -181,7 +185,6 @@ export default function Filter({ onFilterChange, applications }: FilterProps) {
               value={filters.costRange[0]}
               onChange={handleSliderChangeMin}
               className="w-full h-2 bg-gray-300 rounded-lg cursor-pointer"
-              style={{ background: `linear-gradient(to right, #4CAF50 ${((filters.costRange[0] - costLimits.min) / (costLimits.max - costLimits.min)) * 100}%, #ccc ${((filters.costRange[0] - costLimits.min) / (costLimits.max - costLimits.min)) * 100}%)` }}
             />
             <input
               type="range"
@@ -190,7 +193,6 @@ export default function Filter({ onFilterChange, applications }: FilterProps) {
               value={filters.costRange[1]}
               onChange={handleSliderChangeMax}
               className="w-full h-2 bg-gray-300 rounded-lg cursor-pointer mt-2"
-              style={{ background: `linear-gradient(to right, #4CAF50 ${((filters.costRange[1] - costLimits.min) / (costLimits.max - costLimits.min)) * 100}%, #ccc ${((filters.costRange[1] - costLimits.min) / (costLimits.max - costLimits.min)) * 100}%)` }}
             />
           </div>
           {showCostResetButton && (
