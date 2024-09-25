@@ -32,7 +32,7 @@ export default function Filter({ onFilterChange, applications }: FilterProps) {
 
   useEffect(() => {
     onFilterChange(filters);
-  }, [filters]);
+  }, [filters, onFilterChange]);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
