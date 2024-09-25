@@ -49,7 +49,7 @@ export default function LoginPage() {
           onClick={() => router.push('/register')}
           className="w-full p-2 mt-4 border rounded text-blue-500 hover:bg-blue-100"
         >
-          Don't have an account? Register
+             Don&apos;t have an account? Register
         </button>
       </form>
     </div>
