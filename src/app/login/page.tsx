@@ -5,11 +5,12 @@ import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [data, setData] = useState({ email: '', password: '' });
+  const [data, setData] = useState<LoginData>({ email: '', password: '' });
   const [error, setError] = useState('');
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+     setError('');
 
     const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
 
