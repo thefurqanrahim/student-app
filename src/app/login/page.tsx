@@ -3,6 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+interface LoginData {
+  email: string;
+  password: string;
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [data, setData] = useState<LoginData>({ email: '', password: '' });
