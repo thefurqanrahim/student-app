@@ -75,7 +75,7 @@ const HomePage = () => {
   };
 
   const applyFiltersAndSort = (filters: Filters, sortType: string) => {
-    let filtered = applicationsData.filter(app => {
+    const filtered = applicationsData.filter(app => {
       return (
         (filters.country ? app.country === filters.country : true) &&
         (filters.university ? app.university === filters.university : true) &&
