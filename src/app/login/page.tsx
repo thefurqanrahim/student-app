@@ -15,11 +15,12 @@ export default function LoginPage() {
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-     setError('');
+    setError('');
 
-    const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
+    const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
+    const user = storedUsers.find((user: any) => user.email === data.email && user.password === data.password);
 
-    if (storedUser && data.email === storedUser.email && data.password === storedUser.password) {
+    if (user) {
       localStorage.setItem('loggedIn', 'true');
       router.push('/home');
     } else {
@@ -54,7 +55,7 @@ export default function LoginPage() {
           onClick={() => router.push('/register')}
           className="w-full p-2 mt-4 border rounded text-blue-500 hover:bg-blue-100"
         >
-             Don&apos;t have an account? Register
+          Don&apos;t have an account? Register
         </button>
       </form>
     </div>

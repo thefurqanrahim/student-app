@@ -23,7 +23,16 @@ export default function RegisterPage() {
     }
 
     const newUser = { email: data.email, password: data.password, firstName: data.firstName, lastName: data.lastName };
-    localStorage.setItem('user', JSON.stringify(newUser));
+    const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
+
+    const userExists = existingUsers.some((user: any) => user.email === data.email);
+    if (userExists) {
+      setError("User with this email already exists");
+      return;
+    }
+
+    existingUsers.push(newUser);
+    localStorage.setItem('users', JSON.stringify(existingUsers));
     localStorage.setItem('loggedIn', 'true');
     router.push('/login');
   };
