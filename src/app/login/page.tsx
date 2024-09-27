@@ -17,7 +17,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
 
-    const storedUsers = JSON.parse(localStorage.getItem('users') || '[]') as { email: string; password: string; }[];
+    const storedUsers: { email: string; password: string }[] = JSON.parse(localStorage.getItem('users') || '[]');
     const user = storedUsers.find((user: any) => user.email === data.email && user.password === data.password);
 
     if (user) {
