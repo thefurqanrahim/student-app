@@ -23,7 +23,7 @@ export default function RegisterPage() {
     }
 
     const newUser = { email: data.email, password: data.password, firstName: data.firstName, lastName: data.lastName };
-    const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
+    const existingUsers = JSON.parse(localStorage.getItem('users') || '[]') as { email: string; password: string; firstName: string; lastName: string; }[];
 
     const userExists = existingUsers.some((user: any) => user.email === data.email);
     if (userExists) {
