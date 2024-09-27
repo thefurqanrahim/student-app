@@ -66,6 +66,11 @@ const HomePage = () => {
     }
   }, [router]);
 
+  const handleLogout = () => {
+    localStorage.removeItem('loggedIn');
+    router.push('/login');
+  }
+
   const handleFilterChange = (newFilters: Filters) => {
     setFilters(newFilters);
     applyFiltersAndSort(newFilters, sortType);
@@ -104,7 +109,12 @@ const HomePage = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-6">Students Application System</h1>
+      <div className='flex flex-col lg:flex-row lg:justify-between lg:px-5'>
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-6">Students Application System</h1>
+        <button onClick={handleLogout}
+          className="bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 mb-4 w-full sm:w-auto"
+        >log out</button>
+      </div>
       <div className="p-4">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-4">
           <div className="md:col-span-3 sm:col-span-12">
