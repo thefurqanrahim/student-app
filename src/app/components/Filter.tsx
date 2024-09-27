@@ -10,6 +10,7 @@ interface FilterProps {
 
 export default function Filter({ onFilterChange, applications }: FilterProps) {
   const [filters, setFilters] = useState<Filters>({
+    name: '',
     country: '',
     university: '',
     duration: '',
@@ -75,6 +76,7 @@ export default function Filter({ onFilterChange, applications }: FilterProps) {
 
   const handleClearFilters = () => {
     setFilters({
+      name: '',
       country: '',
       university: '',
       duration: '',
@@ -117,6 +119,19 @@ export default function Filter({ onFilterChange, applications }: FilterProps) {
     <div className="mb-4 p-4 bg-white rounded shadow-lg">
       <h3 className="text-xl font-semibold mb-2">Filters</h3>
       <div className="grid grid-cols-1 gap-4">
+        <div className="w-full">
+          <select
+            name="name"
+            value={filters.name}
+            onChange={handleChange}
+            className="border rounded p-2 w-full"
+          >
+            <option value="">Select Name</option>
+            {Array.from(new Set(applications.map(app => app.name))).map((name, index) => (
+              <option key={index} value={name}>{name}</option>
+            ))}
+          </select>
+        </div>
         <div className="w-full">
           <select
             name="country"

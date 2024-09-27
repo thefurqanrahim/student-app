@@ -8,6 +8,7 @@ import Sort from '../components/Sort';
 import { useRouter } from 'next/navigation';
 
 export interface Filters {
+  name: string;
   country: string;
   university: string;
   duration: string;
@@ -21,7 +22,7 @@ export interface Application {
   university: string;
   country: string;
   duration: string;
-  cost:  number;
+  cost: number;
   deadline: string;
   language: string;
 }
@@ -33,6 +34,7 @@ const HomePage = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 10;
   const [filters, setFilters] = useState<Filters>({
+    name: '',
     country: '',
     university: '',
     duration: '',
@@ -44,9 +46,12 @@ const HomePage = () => {
   useEffect(() => {
     const generatedData: Application[] = Array.from({ length: 50 }, (_, index) => ({
       id: index + 1,
-      name: `Application ${index + 1}`,
-      university: `University ${Math.floor(Math.random() * 5) + 1}`,
-      country: `Country ${Math.floor(Math.random() * 5) + 1}`,
+      // name: `Application ${index + 1}`,
+      name: ['John', 'Ceina', 'Luis', 'Akshay', 'Akhtar', 'Sam', 'Neha', 'Johnny', 'Albert'][Math.floor(Math.random() * 4)],
+      // university: `University ${Math.floor(Math.random() * 5) + 1}`,
+      university: ['UK University', 'Oxford University', 'Turkey University', 'Canada University', 'Indus University', 'France University'][Math.floor(Math.random() * 3)],
+      // country: `Country ${Math.floor(Math.random() * 5) + 1}`,
+      country: ['UK', 'USA', 'Turkey', 'Canada', 'Pakistan', 'France'][Math.floor(Math.random() * 3)],
       duration: `${Math.floor(Math.random() * 8) + 1} years`,
       cost: Math.floor(Math.random() * 20000) + 1000,
       deadline: new Date(Date.now() + Math.floor(Math.random() * 10000000000)).toISOString().split('T')[0],
@@ -77,6 +82,7 @@ const HomePage = () => {
   const applyFiltersAndSort = (filters: Filters, sortType: string) => {
     const filtered = applicationsData.filter(app => {
       return (
+        (filters.name ? app.name === filters.name : true) &&
         (filters.country ? app.country === filters.country : true) &&
         (filters.university ? app.university === filters.university : true) &&
         (filters.duration ? app.duration.startsWith(filters.duration) : true) &&
