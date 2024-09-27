@@ -8,6 +8,11 @@ interface LoginData {
   password: string;
 }
 
+interface User {
+  email: string;
+  password: string;
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [data, setData] = useState<LoginData>({ email: '', password: '' });
@@ -17,8 +22,8 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
 
-    const storedUsers: Array<{ email: string; password: string }> = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = storedUsers.find((user: any) => user.email === data.email && user.password === data.password);
+    const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
+    const user = storedUsers.find((user: User) => user.email === data.email && user.password === data.password);
 
     if (user) {
       localStorage.setItem('loggedIn', 'true');

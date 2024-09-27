@@ -3,6 +3,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+interface User {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
+
 export default function RegisterPage() {
   const router = useRouter();
   const [data, setData] = useState({
@@ -23,9 +30,9 @@ export default function RegisterPage() {
     }
 
     const newUser = { email: data.email, password: data.password, firstName: data.firstName, lastName: data.lastName };
-    const existingUsers: Array<{ email: string; password: string; firstName: string; lastName: string }> = JSON.parse(localStorage.getItem('users') || '[]');
+    const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
 
-    const userExists = existingUsers.some((user: any) => user.email === data.email);
+    const userExists = existingUsers.some((user: User) => user.email === data.email);
     if (userExists) {
       setError("User with this email already exists");
       return;
