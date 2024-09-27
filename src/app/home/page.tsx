@@ -46,12 +46,9 @@ const HomePage = () => {
   useEffect(() => {
     const generatedData: Application[] = Array.from({ length: 50 }, (_, index) => ({
       id: index + 1,
-      // name: `Application ${index + 1}`,
-      name: ['John', 'Ceina', 'Luis', 'Akshay', 'Akhtar', 'Sam', 'Neha', 'Johnny', 'Albert'][Math.floor(Math.random() * 4)],
-      // university: `University ${Math.floor(Math.random() * 5) + 1}`,
-      university: ['UK University', 'Oxford University', 'Turkey University', 'Canada University', 'Indus University', 'France University'][Math.floor(Math.random() * 3)],
-      // country: `Country ${Math.floor(Math.random() * 5) + 1}`,
-      country: ['UK', 'USA', 'Turkey', 'Canada', 'Pakistan', 'France'][Math.floor(Math.random() * 3)],
+      name: ['John', 'Ceina', 'Luis', 'Akshay', 'Akhtar', 'Sam', 'Neha', 'Johnny', 'Albert'][Math.floor(Math.random() * 9)],
+      university: ['UK University', 'Oxford University', 'Turkey University', 'Canada University', 'Indus University', 'France University'][Math.floor(Math.random() * 6)],
+      country: ['UK', 'USA', 'Turkey', 'Canada', 'Pakistan', 'France'][Math.floor(Math.random() * 6)],
       duration: `${Math.floor(Math.random() * 8) + 1} years`,
       cost: Math.floor(Math.random() * 20000) + 1000,
       deadline: new Date(Date.now() + Math.floor(Math.random() * 10000000000)).toISOString().split('T')[0],
