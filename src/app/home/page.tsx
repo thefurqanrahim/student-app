@@ -32,7 +32,7 @@ const HomePage = () => {
   const [applicationsData, setApplicationsData] = useState<Application[]>([]);
   const [filteredApplications, setFilteredApplications] = useState<Application[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 9;
   const [filters, setFilters] = useState<Filters>({
     name: '',
     country: '',
